@@ -60,7 +60,7 @@ public class MiGestorDeContactosXML extends DefaultHandler {
             if (qName.equals("nombre"))
                 datosContacto = contenido;
             else if (qName.equals("apellido"))
-                datosContacto = " " + contenido;
+                datosContacto += " " + contenido;
             else if (analizandoTelefonos && qName.equals("casa") &&
                     tipoTelefonoGuardado == TiposTelefono.NINGUNO) {
                 telefono = contenido;
