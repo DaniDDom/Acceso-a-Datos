@@ -16,7 +16,10 @@ public class Plantilla extends ArrayList<Jugador> {
     public void leerJugadores(String nombreArchivo) throws IOException, ClassNotFoundException {
 
         // Lector.
-        BufferedReader lector = new BufferedReader(new FileReader("jugadores.txt"));
+        try (BufferedReader lector = new BufferedReader(new FileReader("jugadores.txt"))) {
+        }catch(Exception e) {
+            System.out.println("Archivo no encontrado.");
+        }
     }
 
     /**
@@ -29,7 +32,7 @@ public class Plantilla extends ArrayList<Jugador> {
 
         // Escritor.
         PrintWriter documentos = null;
-        documentos = new PrintWriter(new BufferedWriter(new FileWriter("documentos",Boolean.TRUE)));
+        documentos = new PrintWriter(new BufferedWriter(new FileWriter("jugadores.txt",Boolean.TRUE)));
         documentos.write(size());
 
         // Recorrido de la lista para grabar los nombres.
