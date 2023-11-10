@@ -1,9 +1,7 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.List;
 
 public class miBD {
 
@@ -64,22 +62,83 @@ public class miBD {
             throw new RuntimeException(e);
         }
     }
-    public void insertar(int atributo1, String atributo2, int atributo3,int atributo4) throws SQLException {
+
+    public void insertar(String nombreTabla, Object... valores) throws SQLException {
         Connection con = this.conectar();
-        PreparedStatement pstmt = con.prepareStatement("INSERT INTO SUBJECTS (atributo1, atributo2, atributo3, atributo4) VALUES(?,?,?,?)");
-        pstmt.setInt(1, atributo1);
-        pstmt.setString(2,atributo2);
-        pstmt.setInt(3,atributo3);
-        pstmt.setInt(4,atributo4);
+
+        StringBuilder sql = new StringBuilder("INSERT INTO " + nombreTabla + " VALUES (DEFAULT");
+        for (int i = 0; i < valores.length; i++) {
+            sql.append(", ?");
+        }
+        sql.append(")");
+
+        PreparedStatement pstmt = con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+        for (int i = 0; i < valores.length; i++) {
+            pstmt.setObject(i + 1, valores[i]);
+        }
         pstmt.executeUpdate();
+
+        System.out.println("Los valores se insertaron correctamente.");
         cerrarConexion(con);
     }
-    public void insertar(String tabla , String columna1, String columna2, String valor1, int valor2) throws SQLException {
+
+    public void crearTabla(String nombreTabla, List<String> parametros) throws SQLException {
         Connection con = this.conectar();
-        PreparedStatement pstmt = con.prepareStatement("INSERT INTO " + tabla + "(" + columna1+ ", " +columna2+ ") VALUES(?,?)");
-        pstmt.setString(1,valor1);
-        pstmt.setInt(2,valor2);
-        pstmt.executeUpdate();
+        StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + nombreTabla + " (");
+
+        for (int i = 0; i < parametros.size(); i++) {
+            sql.append(parametros.get(i));
+
+            if (i < parametros.size() - 1) {
+                sql.append(", ");
+            }
+        }
+
+        sql.append(")");
+
+        try (Statement statement = con.createStatement()) {
+            statement.execute(sql.toString());
+            System.out.println("Tabla creada exitosamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         cerrarConexion(con);
     }
-}
+
+    public void consultas(String sentencia) throws SQLException {
+        Connection con = this.conectar();
+
+
+            try (Statement statement = con.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sentencia)) {
+
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                // Imprimir nombres de columnas
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.print(String.format("%-15s", metaData.getColumnName(i)));
+                }
+                System.out.println();
+
+                // Imprimir línea separadora
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.print("--------------- ");
+                }
+                System.out.println();
+
+                // Imprimir valores
+                while (resultSet.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        System.out.print(String.format("%-15s", resultSet.getString(i)));
+                    }
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
