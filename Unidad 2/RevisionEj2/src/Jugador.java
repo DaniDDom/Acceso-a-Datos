@@ -1,8 +1,3 @@
-package org.example;
-
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.Serializable;
 
 /**
@@ -10,8 +5,6 @@ import java.io.Serializable;
  *
  * @author Dani Dom
  */
-
-@XmlRootElement
 public class Jugador implements Serializable {
 
     /**
@@ -36,7 +29,20 @@ public class Jugador implements Serializable {
      */
     private String descripcion;
 
-    @XmlElement
+    // Constructor con parametros.
+    public Jugador(String nombre, String apodo, String puesto, String dorsal, String descripcion) {
+        this.nombre = nombre;
+        this.apodo = apodo;
+        this.puesto = puesto;
+        this.dorsal = dorsal;
+        this.descripcion = descripcion;
+    }
+
+    // Constructor default
+    public Jugador() {
+    }
+
+
     public String getNombre() {
         return nombre;
     }
@@ -45,7 +51,6 @@ public class Jugador implements Serializable {
         this.nombre = nombre;
     }
 
-    @XmlElement
     public String getApodo() {
         return apodo;
     }
@@ -54,7 +59,6 @@ public class Jugador implements Serializable {
         this.apodo = apodo;
     }
 
-    @XmlElement
     public String getPuesto() {
         return puesto;
     }
@@ -63,7 +67,6 @@ public class Jugador implements Serializable {
         this.puesto = puesto;
     }
 
-    @XmlElement
     public String getDorsal() {
         return dorsal;
     }
@@ -72,7 +75,6 @@ public class Jugador implements Serializable {
         this.dorsal = dorsal;
     }
 
-    @XmlElement
     public String getDescripcion() {
         return descripcion;
     }
@@ -80,6 +82,7 @@ public class Jugador implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 
     @Override
     public String toString() {

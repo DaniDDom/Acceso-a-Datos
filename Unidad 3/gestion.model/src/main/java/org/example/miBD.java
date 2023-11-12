@@ -79,6 +79,7 @@ public class miBD {
         pstmt.executeUpdate();
 
         System.out.println("Los valores se insertaron correctamente.");
+        pstmt.close();
         cerrarConexion(con);
     }
 
@@ -137,6 +138,7 @@ public class miBD {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            con.close();
         }
     }
 

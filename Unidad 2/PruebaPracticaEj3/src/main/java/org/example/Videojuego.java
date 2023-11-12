@@ -7,13 +7,19 @@ package org.example;
 public class Videojuego {
     private String titulo;
     private String semilla;
-    private String estado;
+    private Boolean estado;
     private String tipo_de_recoleccion;
     private String Frecuencia;
     private String Profundidad;
     private String Tamanyo;
     private String palabras_clave;
 
+    private String materia;
+
+
+    public Videojuego() {
+
+    }
     public String getTitulo() {
         return titulo;
     }
@@ -30,11 +36,11 @@ public class Videojuego {
         this.semilla = semilla;
     }
 
-    public String getEstado() {
+    public Boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 
@@ -86,6 +92,12 @@ public class Videojuego {
         this.materia = materia;
     }
 
-    private String materia;
-
+    @Override
+    public String toString() {
+        return "Videojuego{" +
+                "titulo='" + titulo + '\'' +
+                ", semilla='" + semilla + '\'' +
+                ", palabras_clave='" + palabras_clave + '\'' +
+                '}';
+    }
 }

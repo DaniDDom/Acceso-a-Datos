@@ -20,10 +20,13 @@ public class Main {
      * @throws SAXException
      */
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
-        SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
         File videojuegos = new File("videojuegos.xml");
         Manejador manejador = new Manejador();
-        parser.parse("videojuegos.xml", manejador);
+        parser.parse(videojuegos, manejador);
+        manejador.mostrarVideojuegos();
 
     }
 

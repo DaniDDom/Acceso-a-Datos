@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 /**
  * Esta clase representa la plantilla de jugadores.
+ * @author Dani Dom
  */
 public class Plantilla extends ArrayList<Jugador> {
 
@@ -15,27 +16,25 @@ public class Plantilla extends ArrayList<Jugador> {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void cargarJugadores(String nombreArchivo) {
+    public void cargarJugadores(String nombreArchivo, ArrayList<Jugador> plantilla) {
 
 
-        try {
-            File archivo = new File("jugadores.txt");
+
+            File archivo = new File("jugadores.obj");
             if (archivo.exists()) {
-                BufferedReader lector = new BufferedReader(new FileReader(nombreArchivo));
-                String linea;
-                while ((linea = lector.readLine()) != null) {
-                    String[] parametros = linea.split(";");
-                    if (parametros.length == 5) {
-                        Jugador jugador = new Jugador(parametros[0], parametros[1], parametros[2], parametros[3], parametros[4]);
-                        add(jugador);
-                    }
+                try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("jugadores.obj"))) {
+                    plantilla = (ArrayList<Jugador>) entrada.readObject();
+                } catch (IOException | ClassNotFoundException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            } else {
+                try {
+                    archivo.createNewFile();
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
-        } catch (IOException e) {
-            System.out.println("No se pudo cargar la lista de jugadores, el archivo no existe.");
         }
-    }
-
 
     /**
      * Método para escribir el fichero de los jugadores.
@@ -45,22 +44,24 @@ public class Plantilla extends ArrayList<Jugador> {
      */
     public void escribirJugadores(String nombreArchivo) throws IOException {
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
-            for (Jugador jugador : this) {
-                String line = jugador.getNombre() + "; " + jugador.getApodo() + "; " +
-                        jugador.getPuesto() + "; " + jugador.getDorsal() + "; " + jugador.getDescripcion();
-                writer.write(line);
-                writer.newLine();
-            }
-
+        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
+            salida.writeObject(this);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
+    /**
+     * Método para crear un jugador y nos devuelve ese objeto.
+     *
+     * @return
+     */
     public Jugador crearJugador(Scanner teclado) {
 
         // Creación de nuevo jugador.
         Jugador jugador = new Jugador();
 
+        // Entrada de parametros.
         System.out.println("Introduzca el nombre del jugador: ");
         jugador.setNombre(teclado.nextLine());
         System.out.println("Introduzca el apodo del jugador: ");
@@ -74,6 +75,12 @@ public class Plantilla extends ArrayList<Jugador> {
         return jugador;
     }
 
+
+    /**
+     * Método para mostrar jugadores.
+     *
+     * @throws InterruptedException
+     */
     public static void mostrarJugadores(Jugador jugador) throws InterruptedException {
 
 
@@ -88,6 +95,12 @@ public class Plantilla extends ArrayList<Jugador> {
         System.out.println("Descripción del jugador: " + jugador.getDescripcion());
         Thread.sleep(1000);
     }
+
+    /**
+     * Método para buscar jugadores.
+     *
+     * @return
+     */
     public static Jugador buscarJugador(Scanner teclado, ArrayList<Jugador> plantilla) {
         System.out.print("Nombre: ");
         String nombre = teclado.nextLine();

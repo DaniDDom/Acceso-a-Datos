@@ -58,6 +58,17 @@ public class Jugador implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public Jugador(String nombre, String apodo, String puesto, String dorsal, String descripcion) {
+        this.nombre = nombre;
+        this.apodo = apodo;
+        this.puesto = puesto;
+        this.dorsal = dorsal;
+        this.descripcion = descripcion;
+    }
+
+    public Jugador() {
+    }
+
     @Override
     public String toString() {
         return "Jugador{" +
