@@ -44,32 +44,36 @@ public class BD {
         con.close();
     }
 
-    public void addSubject(Scanner teclado) throws SQLException {
+    public void addSubject(String nombreTabla, Object... valores) throws SQLException {
         Connection con = this.conectar();
-        if (teclado.hasNextLine()) teclado.nextLine();
-        System.out.println("¿Nombre de la asignatura?");
-        String subjectName = teclado.nextLine();
-        System.out.println("¿Año?");
-        int subjectYear = teclado.nextInt();
-        System.out.println("¿Código de curso?");
-        int courseCode = teclado.nextInt();
-        System.out.println();
-        Statement statement = con.createStatement();
-        StringBuilder sqlSentence = new StringBuilder();
-        sqlSentence.append("INSERT INTO asignaturas VALUES ");
-        sqlSentence.append(" (DEFAULT, '");
-        sqlSentence.append(subjectName);
-        sqlSentence.append("', '");
-        sqlSentence.append(subjectYear);
-        sqlSentence.append("', '");
-        sqlSentence.append(courseCode);
-        sqlSentence.append("');");
-        int rows = statement.executeUpdate(sqlSentence.toString(), Statement.RETURN_GENERATED_KEYS);
-        System.out.printf("Filas añadidas: %d \n", rows);
-        statement.close();
-        con.close();
+
+        StringBuilder sql = new StringBuilder("INSERT INTO " + nombreTabla + " VALUES (DEFAULT");
+        for (int i = 0; i < valores.length; i++) {
+            sql.append(", ?");
+        }
+        sql.append(")");
+
+        PreparedStatement pstmt = con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+        for (int i = 0; i < valores.length; i++) {
+            pstmt.setObject(i + 1, valores[i]);
+        }
+        pstmt.executeUpdate();
+
+        System.out.println("Los valores se insertaron correctamente.");
+        pstmt.close();
+        cerrarConexion(con);
     }
 
+    public void crearTabla(String sentencia) throws SQLException {
+        Connection con = this.conectar();
+        try(PreparedStatement statement = con.prepareStatement(sentencia)) {
+            statement.execute();
+            System.out.println("Tabla creada con exito");
+        }
+
+        con.close();
+
+    }
     public void DisplaySubjectList() throws SQLException {
         Connection con = this.conectar();
         Statement statement = con.createStatement();
