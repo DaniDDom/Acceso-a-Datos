@@ -37,6 +37,7 @@ public class miBD {
         this.url = url;
     }
 
+
     public Connection conectar() throws SQLException {
         Connection con = null;
         try {
@@ -63,7 +64,7 @@ public class miBD {
         }
     }
 
-    public void insertar(String nombreTabla, Object... valores) throws SQLException {
+    public void insertarDEFAULT(String nombreTabla, Object... valores) throws SQLException {
         Connection con = this.conectar();
 
         StringBuilder sql = new StringBuilder("INSERT INTO " + nombreTabla + " VALUES (DEFAULT");
@@ -73,6 +74,29 @@ public class miBD {
         sql.append(")");
 
         PreparedStatement pstmt = con.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+        for (int i = 0; i < valores.length; i++) {
+            pstmt.setObject(i + 1, valores[i]);
+        }
+        pstmt.executeUpdate();
+
+        System.out.println("Los valores se insertaron correctamente.");
+        pstmt.close();
+        cerrarConexion(con);
+    }
+
+    public void insertar(String nombreTabla, Object... valores) throws SQLException {
+        Connection con = this.conectar();
+
+        StringBuilder sql = new StringBuilder("INSERT INTO " + nombreTabla + " VALUES (");
+        for (int i = 0; i < valores.length; i++) {
+            if (i > 0) {
+                sql.append(", ");
+            }
+            sql.append("?");
+        }
+        sql.append(")");
+
+        PreparedStatement pstmt = con.prepareStatement(sql.toString());
         for (int i = 0; i < valores.length; i++) {
             pstmt.setObject(i + 1, valores[i]);
         }
@@ -110,37 +134,51 @@ public class miBD {
         Connection con = this.conectar();
 
 
-            try (Statement statement = con.createStatement();
-                 ResultSet resultSet = statement.executeQuery(sentencia)) {
+        try (Statement statement = con.createStatement();
+             ResultSet resultSet = statement.executeQuery(sentencia)) {
 
-                ResultSetMetaData metaData = resultSet.getMetaData();
-                int columnCount = metaData.getColumnCount();
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
 
-                // Imprimir nombres de columnas
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.print(String.format("%-15s", metaData.getColumnName(i)));
-                }
-                System.out.println();
-
-                // Imprimir línea separadora
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.print("--------------- ");
-                }
-                System.out.println();
-
-                // Imprimir valores
-                while (resultSet.next()) {
-                    for (int i = 1; i <= columnCount; i++) {
-                        System.out.print(String.format("%-15s", resultSet.getString(i)));
-                    }
-                    System.out.println();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            // Imprimir nombres de columnas
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.print(String.format("%-15s", metaData.getColumnName(i)));
             }
-            con.close();
+            System.out.println();
+
+            // Imprimir línea separadora
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.print("--------------- ");
+            }
+            System.out.println();
+
+            // Imprimir valores
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.print(String.format("%-15s", resultSet.getString(i)));
+                }
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        con.close();
     }
+
+    public void eliminar(String sentencia) throws SQLException {
+        Connection con = this.conectar();
+
+        PreparedStatement pstm = con.prepareStatement(sentencia);
+        pstm.executeUpdate();
+
+        System.out.println("Se elimino correctamente.");
+        pstm.close();
+        con.close();
+
+
+    }
+
+}
 
 
 
