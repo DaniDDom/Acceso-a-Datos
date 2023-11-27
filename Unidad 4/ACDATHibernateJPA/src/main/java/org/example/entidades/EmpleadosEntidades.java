@@ -1,5 +1,11 @@
 package org.example.entidades;
 
+import jakarta.persistence.*;
+
+import java.util.Objects;
+
+@Entity
+@Table(name = "empleados", schema = "public", catalog = "empleados")
 public class EmpleadosEntidades {
     private int empno;
     private String nombre;
@@ -7,6 +13,9 @@ public class EmpleadosEntidades {
     private Integer depno;
     private DepartamentosEntidades departamentosByDepno;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "empno")
     public int getEmpno() {
         return empno;
     }
@@ -15,6 +24,8 @@ public class EmpleadosEntidades {
         this.empno = empno;
     }
 
+    @Basic
+    @Column(name = "nombre")
     public String getNombre() {
         return nombre;
     }
@@ -23,6 +34,8 @@ public class EmpleadosEntidades {
         this.nombre = nombre;
     }
 
+    @Basic
+    @Column(name = "puesto")
     public String getPuesto() {
         return puesto;
     }
@@ -31,6 +44,8 @@ public class EmpleadosEntidades {
         this.puesto = puesto;
     }
 
+    @Basic
+    @Column(name = "depno")
     public Integer getDepno() {
         return depno;
     }
@@ -43,26 +58,17 @@ public class EmpleadosEntidades {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         EmpleadosEntidades that = (EmpleadosEntidades) o;
-
-        if (empno != that.empno) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (puesto != null ? !puesto.equals(that.puesto) : that.puesto != null) return false;
-        if (depno != null ? !depno.equals(that.depno) : that.depno != null) return false;
-
-        return true;
+        return empno == that.empno && Objects.equals(nombre, that.nombre) && Objects.equals(puesto, that.puesto) && Objects.equals(depno, that.depno);
     }
 
     @Override
     public int hashCode() {
-        int result = empno;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + (puesto != null ? puesto.hashCode() : 0);
-        result = 31 * result + (depno != null ? depno.hashCode() : 0);
-        return result;
+        return Objects.hash(empno, nombre, puesto, depno);
     }
 
+    @ManyToOne
+    @JoinColumn(name = "depno", referencedColumnName = "depno" , insertable = false, updatable = false)
     public DepartamentosEntidades getDepartamentosByDepno() {
         return departamentosByDepno;
     }

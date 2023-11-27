@@ -9,5 +9,11 @@
         <id name="depno" column="depno"/>
         <property name="nombre" column="nombre"/>
         <property name="ubicacion" column="ubicacion"/>
+        <set name="empleadosByDepno" inverse="true">
+            <key>
+                <column name="depno" not-null="true"/>
+            </key>
+            <one-to-many not-found="ignore" class="org.example.entidades.EmpleadosEntidades"/>
+        </set>
     </class>
 </hibernate-mapping>

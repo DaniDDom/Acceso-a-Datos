@@ -6,10 +6,10 @@
   <session-factory>
     <property name="connection.url">jdbc:postgresql://localhost:5432/empleados</property>
     <property name="connection.driver_class">org.postgresql.Driver</property>
-    <property name="connection.username">postgres</property>
-    <property name="connection.password">iesbelen</property>
-    <mapping resource="DepartamentosEntidades.hbm.xml"/>
-      <mapping resource="EmpleadosEntidades.hbm.xml"/>
+      <property name="connection.username">postgres</property>
+      <property name="connection.password">iesbelen</property>
+      <mapping class="org.example.entidades.DepartamentosEntidades"/>
+      <mapping class="org.example.entidades.EmpleadosEntidades"/>
       <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

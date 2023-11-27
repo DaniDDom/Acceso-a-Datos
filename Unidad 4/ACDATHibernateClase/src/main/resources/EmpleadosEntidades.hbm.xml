@@ -8,9 +8,9 @@
         <id name="empno" column="empno"/>
         <property name="nombre" column="nombre"/>
         <property name="puesto" column="puesto"/>
-        <property name="depno" column="depno" insert="false" update="false"/>
+        <property name="depno" column="depno"/>
         <many-to-one name="departamentosByDepno" class="org.example.entidades.DepartamentosEntidades">
-            <column name="depno" not-null="true" />
+            <column name="depno" not-null="true"/>
         </many-to-one>
     </class>
 </hibernate-mapping>
