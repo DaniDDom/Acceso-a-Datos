@@ -56,6 +56,21 @@ public class miBD {
         return con;
     }
 
+    public boolean createDatabase(String sentencia) {
+
+        boolean creada = false;
+        try {
+            Connection con = this.conectar();
+            Statement stm = con.createStatement();
+            stm.executeUpdate(sentencia);
+            creada = true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return creada;
+    }
+
     public void cerrarConexion(Connection con) {
         try {
             con.close();

@@ -247,6 +247,7 @@ public class Main {
                             System.out.println("Ese empleado no existe.");
                         }
                     }
+           //TODO Crear método para extraer X.
                 }
             }
             option = menu();
