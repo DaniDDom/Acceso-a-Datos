@@ -1,0 +1,67 @@
+package com.example.springboot.controladores;
+
+import com.example.springboot.dao.IDepartamentosDAO;
+import com.example.springboot.dao.IEmpleadosDAO;
+import com.example.springboot.modelo.DepartamentosEntity;
+import com.example.springboot.modelo.EmpleadosEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api-rest/departamento")
+public class controladorDepartamento {
+    @Autowired
+    IDepartamentosDAO departamentoDAO;
+
+    @GetMapping
+    public List<DepartamentosEntity> buscarDepartamentos() {
+        return (List<DepartamentosEntity>) departamentoDAO.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DepartamentosEntity> buscarDepartamentoPorId(@PathVariable(value="id") int id) {
+        Optional<DepartamentosEntity> empleado = departamentoDAO.findById(id);
+
+        if(empleado.isPresent()) {
+            return ResponseEntity.ok().body(empleado.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public DepartamentosEntity guardarDepartamento(@Validated @RequestBody DepartamentosEntity departamento) {
+        return departamentoDAO.save(departamento);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> borrarDepartamento(@PathVariable(value="id") int id) {
+        Optional<DepartamentosEntity> empleado = departamentoDAO.findById(id);
+
+        if(empleado.isPresent()) {
+            departamentoDAO.deleteById(id);
+            return ResponseEntity.ok().body("Borrado");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarDepartamento(@RequestBody DepartamentosEntity nuevoDepartamento, @PathVariable(value="id") int id) {
+        Optional<DepartamentosEntity> departamento = departamentoDAO.findById(id);
+        if(departamento.isPresent()) {
+            departamento.get().setNombre(nuevoDepartamento.getNombre());
+            departamento.get().setUbicacion(nuevoDepartamento.getUbicacion());
+            departamento.get().setDepno(nuevoDepartamento.getDepno());
+            departamentoDAO.save(departamento.get());
+            return ResponseEntity.ok().body("Update");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
