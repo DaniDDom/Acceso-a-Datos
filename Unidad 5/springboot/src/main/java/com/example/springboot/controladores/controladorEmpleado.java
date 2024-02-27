@@ -1,7 +1,10 @@
 package com.example.springboot.controladores;
 
 
+import com.example.springboot.DTO.EmpleadosDTO;
+import com.example.springboot.dao.IDepartamentosDAO;
 import com.example.springboot.dao.IEmpleadosDAO;
+import com.example.springboot.modelo.DepartamentosEntity;
 import com.example.springboot.modelo.EmpleadosEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,9 @@ public class controladorEmpleado {
 
     @Autowired
     IEmpleadosDAO empleadosDAO;
+
+    @Autowired
+    IDepartamentosDAO departamentosDAO;
 
     @GetMapping
     public List<EmpleadosEntity> buscarEmpleados() {
@@ -63,5 +69,22 @@ public class controladorEmpleado {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<EmpleadosDTO> buscarEmpleadoDTOPorId(@PathVariable (value = "id") int id) {
+        Optional<EmpleadosEntity> employee = empleadosDAO.findById(id);
+        if (employee.isPresent()) {
+            Optional<DepartamentosEntity> departamento = departamentosDAO.findById(employee.get().getDepno());
+
+            EmpleadosDTO empleadosDTO = new EmpleadosDTO();
+            empleadosDTO.setEmpno((employee.get().getEmpno()));
+            empleadosDTO.setNombre(employee.get().getNombre());
+            empleadosDTO.setPuesto(employee.get().getPuesto());
+            empleadosDTO.setDepno(departamento.get().getDepno());
+            empleadosDTO.setDepartamentoNombre(departamento.get().getNombre());
+            empleadosDTO.setDepartamentoUbicacion(departamento.get().getUbicacion());
+            return ResponseEntity.ok().body(empleadosDTO);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

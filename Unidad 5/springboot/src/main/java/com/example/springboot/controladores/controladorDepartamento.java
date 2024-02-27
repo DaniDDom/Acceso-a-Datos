@@ -25,10 +25,10 @@ public class controladorDepartamento {
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartamentosEntity> buscarDepartamentoPorId(@PathVariable(value="id") int id) {
-        Optional<DepartamentosEntity> empleado = departamentoDAO.findById(id);
+        Optional<DepartamentosEntity> departamento = departamentoDAO.findById(id);
 
-        if(empleado.isPresent()) {
-            return ResponseEntity.ok().body(empleado.get());
+        if(departamento.isPresent()) {
+            return ResponseEntity.ok().body(departamento.get());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -41,9 +41,9 @@ public class controladorDepartamento {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> borrarDepartamento(@PathVariable(value="id") int id) {
-        Optional<DepartamentosEntity> empleado = departamentoDAO.findById(id);
+        Optional<DepartamentosEntity> departamento = departamentoDAO.findById(id);
 
-        if(empleado.isPresent()) {
+        if(departamento.isPresent()) {
             departamentoDAO.deleteById(id);
             return ResponseEntity.ok().body("Borrado");
         } else {
